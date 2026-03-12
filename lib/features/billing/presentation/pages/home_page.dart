@@ -88,10 +88,24 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           if (state.error != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.error!),
+                content: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(child: Text(state.error!)),
+                  ],
+                ),
                 backgroundColor: AppTheme.errorColor,
                 behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                margin: const EdgeInsets.all(16),
               ),
             );
           }
@@ -117,18 +131,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ),
       bottomSheet: BlocBuilder<BillingBloc, BillingState>(builder: (context, state) {
         return Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           decoration: BoxDecoration(
             color: Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 20,
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 30,
                 offset: const Offset(0, -5),
               ),
             ],
           ),
           child: SafeArea(
+            top: false,
             child: GestureDetector(
               onTap: state.cartItems.isEmpty
                   ? null
@@ -137,20 +153,19 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       await context.push('/checkout');
                       if (_isCameraOn && mounted) _scannerController.start();
                     },
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 32),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 28),
                 decoration: BoxDecoration(
-                  gradient: state.cartItems.isEmpty
-                      ? null
-                      : AppTheme.primaryGradient,
-                  color: state.cartItems.isEmpty ? Colors.grey[300] : null,
+                  gradient: state.cartItems.isEmpty ? null : AppTheme.primaryGradient,
+                  color: state.cartItems.isEmpty ? AppTheme.textLight.withValues(alpha: 0.3) : null,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: state.cartItems.isEmpty
                       ? null
                       : [
                           BoxShadow(
                             color: AppTheme.primaryColor.withValues(alpha: 0.4),
-                            blurRadius: 15,
+                            blurRadius: 20,
                             offset: const Offset(0, 8),
                           ),
                         ],
@@ -159,32 +174,40 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.payment,
-                      color: state.cartItems.isEmpty ? Colors.grey[500] : Colors.white,
+                      Icons.shopping_cart_checkout,
+                      color: state.cartItems.isEmpty ? AppTheme.textLight : Colors.white,
+                      size: 24,
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      'Periksa Pesanan',
+                      'Buka Kasir',
                       style: TextStyle(
-                        color: state.cartItems.isEmpty ? Colors.grey[500] : Colors.white,
+                        color: state.cartItems.isEmpty ? AppTheme.textLight : Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     if (state.cartItems.isNotEmpty) ...[
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 16),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Text(
-                          '${state.cartItems.fold<int>(0, (sum, i) => sum + i.quantity)}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.qr_code_scanner, color: Colors.white, size: 16),
+                            const SizedBox(width: 6),
+                            Text(
+                              '${state.cartItems.fold<int>(0, (sum, i) => sum + i.quantity)} item',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -201,14 +224,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget _buildScannerSection() {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppTheme.primaryColor.withValues(alpha: 0.9),
-            AppTheme.primaryDark,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        gradient: AppTheme.primaryGradient,
       ),
       child: Stack(
         fit: StackFit.expand,
@@ -217,24 +233,21 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             controller: _scannerController,
             onDetect: _onDetect,
           ),
-          if (!_isCameraOn) _buildCameraOffState(),
-          
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.black.withValues(alpha: 0.3),
-                  Colors.transparent,
-                  Colors.transparent,
                   Colors.black.withValues(alpha: 0.5),
+                  Colors.transparent,
+                  Colors.transparent,
+                  Colors.black.withValues(alpha: 0.6),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                stops: const [0.0, 0.3, 0.7, 1.0],
+                stops: const [0.0, 0.25, 0.65, 1.0],
               ),
             ),
           ),
-          
           Positioned(
             top: MediaQuery.of(context).padding.top + 8,
             left: 16,
@@ -243,24 +256,23 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
                     children: [
-                      Container(
-                        width: 8,
-                        height: 8,
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        width: 10,
+                        height: 10,
                         decoration: BoxDecoration(
-                          color: _isCameraOn ? AppTheme.successColor : Colors.red,
+                          color: _isCameraOn ? AppTheme.successColor : AppTheme.errorColor,
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: _isCameraOn 
-                                  ? AppTheme.successColor 
-                                  : Colors.red,
+                              color: _isCameraOn ? AppTheme.successColor : AppTheme.errorColor,
                               blurRadius: 8,
                               spreadRadius: 2,
                             ),
@@ -269,11 +281,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        _isCameraOn ? 'Memindai...' : 'Kamera Off',
+                        _isCameraOn ? 'Siap Memindai' : 'Kamera Mati',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
@@ -281,15 +293,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ),
                 Row(
                   children: [
-                    _buildOverlayButton(
-                      icon: _isFlashOn ? Icons.flashlight_off : Icons.flashlight_on,
+                    _buildActionButton(
+                      icon: _isFlashOn ? Icons.flashlight_on : Icons.flashlight_off,
                       onPressed: () {
                         setState(() => _isFlashOn = !_isFlashOn);
                         _scannerController.toggleTorch();
                       },
                     ),
                     const SizedBox(width: 8),
-                    _buildOverlayButton(
+                    _buildActionButton(
                       icon: _isCameraOn ? Icons.videocam : Icons.videocam_off,
                       onPressed: () {
                         setState(() => _isCameraOn = !_isCameraOn);
@@ -301,7 +313,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       },
                     ),
                     const SizedBox(width: 8),
-                    _buildOverlayButton(
+                    _buildActionButton(
                       icon: Icons.settings,
                       onPressed: () async {
                         _scannerController.stop();
@@ -314,7 +326,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               ],
             ),
           ),
-
           if (_isCameraOn)
             Center(
               child: AnimatedBuilder(
@@ -324,15 +335,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     width: 260,
                     height: 260,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(28),
                       border: Border.all(
                         color: Colors.white.withValues(alpha: _pulseAnimation.value),
                         width: 3,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppTheme.primaryColor.withValues(alpha: 0.3),
-                          blurRadius: 30,
+                          color: AppTheme.secondaryColor.withValues(alpha: 0.3),
+                          blurRadius: 40,
                           spreadRadius: 5,
                         ),
                       ],
@@ -350,13 +361,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                               color: Colors.black.withValues(alpha: 0.5),
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Text(
-                              'Pindai Barcode',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.qr_code_scanner, color: Colors.white.withValues(alpha: 0.9), size: 18),
+                                const SizedBox(width: 8),
+                                const Text(
+                                  'Pindai Barcode',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -366,106 +384,83 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 },
               ),
             ),
+          if (!_isCameraOn)
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.videocam_off,
+                      color: Colors.white.withValues(alpha: 0.5),
+                      size: 56,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Kamera Dimatikan',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 48),
+                    child: Text(
+                      'Nyalakan kamera untuk memindai barcode produk',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.7),
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppTheme.primaryColor,
+                      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    icon: const Icon(Icons.videocam),
+                    label: const Text(
+                      'Nyalakan Kamera',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () {
+                      setState(() => _isCameraOn = true);
+                      _scannerController.start();
+                    },
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildCameraOffState() {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppTheme.textPrimary,
-            AppTheme.textPrimary.withValues(alpha: 0.8),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.2),
-                width: 2,
-              ),
-            ),
-            alignment: Alignment.center,
-            child: Icon(Icons.videocam_off, color: Colors.white.withValues(alpha: 0.5), size: 48),
-          ),
-          const SizedBox(height: 24),
-          const Text(
-            'Kamera dimatikan',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 48),
-            child: Text(
-              'Nyalakan kamera untuk memindai barcode produk secara otomatis',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.7),
-                fontSize: 14,
-              ),
-            ),
-          ),
-          const SizedBox(height: 32),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryColor,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-            icon: const Icon(Icons.videocam),
-            label: const Text(
-              'Nyalakan Kamera',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            onPressed: () {
-              setState(() => _isCameraOn = true);
-              _scannerController.start();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOverlayButton({
+  Widget _buildActionButton({
     required IconData icon,
     required VoidCallback onPressed,
   }) {
     return Container(
-      width: 44,
-      height: 44,
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.3),
         shape: BoxShape.circle,
         border: Border.all(
           color: Colors.white.withValues(alpha: 0.2),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: IconButton(
         icon: Icon(icon, color: Colors.white, size: 22),
@@ -498,12 +493,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget _buildBottomPanel() {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: AppTheme.backgroundColor,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
+            blurRadius: 30,
             offset: const Offset(0, -5),
           ),
         ],
@@ -511,101 +506,101 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       child: Column(
         children: [
           Container(
-            width: 60,
+            width: 50,
             height: 5,
             margin: const EdgeInsets.symmetric(vertical: 16),
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: AppTheme.textLight.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(10),
             ),
           ),
-          BlocBuilder<BillingBloc, BillingState>(
-            builder: (context, state) {
-              final totalItems = state.cartItems.fold<int>(0, (sum, i) => sum + i.quantity);
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: AppTheme.cardGradient,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            gradient: AppTheme.primaryGradient,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppTheme.primaryColor.withValues(alpha: 0.3),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 24),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: BlocBuilder<BillingBloc, BillingState>(
+              builder: (context, state) {
+                final totalItems = state.cartItems.fold<int>(0, (sum, i) => sum + i.quantity);
+                return Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: AppTheme.gradientCardDecoration,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          gradient: AppTheme.primaryGradient,
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 16),
-                        Column(
+                        child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 28),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
                               'Item Dipindai',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.textPrimary,
                               ),
                             ),
-                            Text(
-                              '$totalItems item',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[500],
+                            const SizedBox(height: 4),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '$totalItems item',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppTheme.primaryColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Text(
-                          'TOTAL',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.textLight,
-                            letterSpacing: 1.2,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Text(
+                            'TOTAL',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.textLight,
+                              letterSpacing: 1.2,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Rp ${state.totalAmount.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.primaryColor,
+                          const SizedBox(height: 4),
+                          Text(
+                            'Rp ${state.totalAmount.toStringAsFixed(0)}',
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w800,
+                              color: AppTheme.primaryColor,
+                              letterSpacing: -0.5,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            },
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
           const SizedBox(height: 16),
           Expanded(
@@ -633,52 +628,45 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   Widget _buildEmptyCart() {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withValues(alpha: 0.2),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            alignment: Alignment.center,
-            child: Icon(
-              Icons.shopping_basket_outlined,
-              size: 56,
-              color: Colors.grey[300],
-            ),
-          ),
-          const SizedBox(height: 24),
-          const Text(
-            'Keranjang Kosong',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: AppTheme.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 48),
-            child: Text(
-              'Pindai barcode produk menggunakan kamera untuk menambahkan item ke keranjang',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey[500],
-                fontSize: 14,
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor.withValues(alpha: 0.08),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.qr_code_scanner,
+                size: 56,
+                color: AppTheme.primaryColor.withValues(alpha: 0.3),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 24),
+            const Text(
+              'Belum Ada Item',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Pindai barcode produk menggunakan kamera\nuntuk menambahkan ke keranjang',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppTheme.textSecondary,
+                fontSize: 14,
+                height: 1.5,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -690,8 +678,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 15,
             offset: const Offset(0, 4),
           ),
         ],
@@ -709,27 +697,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppTheme.primaryColor.withValues(alpha: 0.1),
-                        AppTheme.primaryLight.withValues(alpha: 0.1),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                    color: AppTheme.primaryColor.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   alignment: Alignment.center,
                   child: Text(
                     '${item.quantity}x',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppTheme.primaryColor,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -746,11 +727,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Rp ${item.product.price.toStringAsFixed(0)}',
+                        'Rp ${item.product.price.toStringAsFixed(0)}/item',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: Colors.grey[600],
+                          fontSize: 13,
+                          color: AppTheme.textSecondary,
                         ),
                       ),
                     ],
@@ -761,7 +742,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   children: [
                     Text(
                       'Rp ${item.total.toStringAsFixed(0)}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                         color: AppTheme.primaryColor,
@@ -770,7 +751,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     const SizedBox(height: 8),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey[100],
+                        color: AppTheme.backgroundColor,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -791,7 +772,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             },
                           ),
                           Container(
-                            width: 40,
+                            width: 36,
                             alignment: Alignment.center,
                             child: Text(
                               '${item.quantity}',
