@@ -48,7 +48,7 @@ class _ProductListPageState extends State<ProductListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: AppTheme.backgroundGradient,
         ),
         child: Column(
@@ -112,7 +112,7 @@ class _ProductListPageState extends State<ProductListPage> {
                               child: TextField(
                                 controller: _searchController,
                                 textCapitalization: TextCapitalization.words,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: 'Cari produk...',
                                   border: InputBorder.none,
                                   prefixIcon: Icon(Icons.search, color: AppTheme.textLight),
@@ -255,7 +255,7 @@ class _ProductListPageState extends State<ProductListPage> {
             Text(
               errorMessage ?? 'Tambahkan produk untuk memulai',
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+              style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14),
             ),
           ],
         ),
@@ -285,7 +285,7 @@ class _ProductListPageState extends State<ProductListPage> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppTheme.textPrimary),
             ),
             const SizedBox(height: 8),
-            Text('Coba cari dengan kata kunci lain', style: TextStyle(color: AppTheme.textSecondary, fontSize: 14)),
+            const Text('Coba cari dengan kata kunci lain', style: TextStyle(color: AppTheme.textSecondary, fontSize: 14)),
           ],
         ),
       ),
@@ -317,7 +317,7 @@ class _ProductListPageState extends State<ProductListPage> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   alignment: Alignment.center,
-                  child: Icon(Icons.inventory_2, color: AppTheme.primaryColor, size: 28),
+                  child: const Icon(Icons.inventory_2, color: AppTheme.primaryColor, size: 28),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -328,16 +328,16 @@ class _ProductListPageState extends State<ProductListPage> {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          Icon(Icons.qr_code, size: 14, color: AppTheme.textLight),
+                          const Icon(Icons.qr_code, size: 14, color: AppTheme.textLight),
                           const SizedBox(width: 4),
-                          Text(product.barcode, style: TextStyle(fontSize: 12, color: AppTheme.textSecondary, fontFamily: 'monospace')),
+                          Text(product.barcode, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary, fontFamily: 'monospace')),
                         ],
                       ),
                       const SizedBox(height: 4),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(color: AppTheme.successColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(8)),
-                        child: Text('Rp ${product.price.toStringAsFixed(0)}', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.successColor)),
+                        child: Text('Rp ${product.price.toStringAsFixed(0)}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.successColor)),
                       ),
                     ],
                   ),
@@ -377,12 +377,12 @@ class _ProductListPageState extends State<ProductListPage> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(color: AppTheme.errorColor.withValues(alpha: 0.1), shape: BoxShape.circle),
-                child: Icon(Icons.delete_outline, color: AppTheme.errorColor, size: 40),
+                child: const Icon(Icons.delete_outline, color: AppTheme.errorColor, size: 40),
               ),
               const SizedBox(height: 20),
               const Text('Hapus Produk', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
-              Text('Apakah Anda yakin ingin menghapus "${product.name}"?', textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: AppTheme.textSecondary)),
+              Text('Apakah Anda yakin ingin menghapus "${product.name}"?', textAlign: TextAlign.center, style: const TextStyle(fontSize: 14, color: AppTheme.textSecondary)),
               const SizedBox(height: 24),
               Row(
                 children: [

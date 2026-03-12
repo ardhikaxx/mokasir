@@ -223,7 +223,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   Widget _buildScannerSection() {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: AppTheme.primaryGradient,
       ),
       child: Stack(
@@ -562,7 +562,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                               ),
                               child: Text(
                                 '$totalItems item',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 12,
                                   color: AppTheme.primaryColor,
                                   fontWeight: FontWeight.w600,
@@ -587,7 +587,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           const SizedBox(height: 4),
                           Text(
                             'Rp ${state.totalAmount.toStringAsFixed(0)}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.w800,
                               color: AppTheme.primaryColor,
@@ -656,7 +656,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               ),
             ),
             const SizedBox(height: 8),
-            Text(
+            const Text(
               'Pindai barcode produk menggunakan kamera\nuntuk menambahkan ke keranjang',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -703,7 +703,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   alignment: Alignment.center,
                   child: Text(
                     '${item.quantity}x',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: AppTheme.primaryColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
@@ -728,7 +728,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       const SizedBox(height: 4),
                       Text(
                         'Rp ${item.product.price.toStringAsFixed(0)}/item',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 13,
                           color: AppTheme.textSecondary,
@@ -742,7 +742,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   children: [
                     Text(
                       'Rp ${item.total.toStringAsFixed(0)}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                         color: AppTheme.primaryColor,

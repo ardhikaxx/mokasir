@@ -26,7 +26,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       },
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: AppTheme.backgroundGradient,
           ),
           child: BlocConsumer<BillingBloc, BillingState>(
@@ -98,7 +98,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             ),
                           ),
                           background: Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               gradient: AppTheme.primaryGradient,
                             ),
                           ),
@@ -146,7 +146,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                           const SizedBox(height: 4),
                                           Text(
                                             '${billingState.cartItems.length} item dipesan',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 14,
                                               color: AppTheme.textSecondary,
                                             ),
@@ -163,14 +163,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         color: AppTheme.successColor.withValues(alpha: 0.1),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
-                                      child: Row(
+                                      child: const Row(
                                         children: [
                                           Icon(
                                             Icons.check_circle,
                                             color: AppTheme.successColor,
                                             size: 16,
                                           ),
-                                          const SizedBox(width: 6),
+                                          SizedBox(width: 6),
                                           Text(
                                             'Aktif',
                                             style: TextStyle(
@@ -202,15 +202,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                           top: Radius.circular(20),
                                         ),
                                       ),
-                                      child: Row(
+                                      child: const Row(
                                         children: [
                                           Icon(
                                             Icons.receipt_long,
                                             color: AppTheme.primaryColor,
                                             size: 20,
                                           ),
-                                          const SizedBox(width: 10),
-                                          const Text(
+                                          SizedBox(width: 10),
+                                          Text(
                                             'Ringkasan Pesanan',
                                             style: TextStyle(
                                               fontSize: 16,
@@ -248,7 +248,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                               alignment: Alignment.center,
                                               child: Text(
                                                 '${item.quantity}x',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: AppTheme.primaryColor,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -270,7 +270,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                                   ),
                                                   Text(
                                                     'Rp ${item.product.price.toStringAsFixed(0)}/item',
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 12,
                                                       color: AppTheme.textSecondary,
                                                     ),
@@ -294,9 +294,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     // Total Section
                                     Container(
                                       padding: const EdgeInsets.all(20),
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         color: AppTheme.backgroundColor,
-                                        borderRadius: const BorderRadius.vertical(
+                                        borderRadius: BorderRadius.vertical(
                                           bottom: Radius.circular(20),
                                         ),
                                       ),
@@ -375,7 +375,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                           color: AppTheme.secondaryColor.withValues(alpha: 0.1),
                                           shape: BoxShape.circle,
                                         ),
-                                        child: Icon(
+                                        child: const Icon(
                                           Icons.qr_code_2,
                                           size: 40,
                                           color: AppTheme.secondaryColor,
@@ -391,7 +391,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         ),
                                       ),
                                       const SizedBox(height: 4),
-                                      Text(
+                                      const Text(
                                         'Scan QR dengan aplikasi UPI',
                                         style: TextStyle(
                                           fontSize: 14,
@@ -426,7 +426,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Icon(
+                                            const Icon(
                                               Icons.payment,
                                               size: 16,
                                               color: AppTheme.primaryColor,
@@ -434,7 +434,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                             const SizedBox(width: 8),
                                             Text(
                                               'UPI: $upiId',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.w600,
                                                 color: AppTheme.primaryColor,
