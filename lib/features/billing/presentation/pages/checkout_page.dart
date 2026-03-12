@@ -27,14 +27,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       child: Scaffold(
         body: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppTheme.backgroundColor,
-                AppTheme.backgroundColor.withValues(alpha: 0.95),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+            gradient: AppTheme.backgroundGradient,
           ),
           child: BlocConsumer<BillingBloc, BillingState>(
             listener: (context, state) {
@@ -49,17 +42,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             color: Colors.white.withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.check, color: Colors.white, size: 20),
+                          child: const Icon(Icons.check_circle, color: Colors.white, size: 20),
                         ),
                         const SizedBox(width: 12),
-                        const Text('Berhasil dicetak'),
+                        const Text('Struk berhasil dicetak!'),
                       ],
                     ),
                     backgroundColor: AppTheme.successColor,
                     behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    margin: const EdgeInsets.all(16),
                   ),
                 );
               }
@@ -77,8 +69,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
                   return CustomScrollView(
                     slivers: [
+                      // App Bar
                       SliverAppBar(
-                        expandedHeight: 120,
+                        expandedHeight: 100,
                         floating: false,
                         pinned: true,
                         backgroundColor: AppTheme.primaryColor,
@@ -89,7 +82,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               color: Colors.white.withValues(alpha: 0.2),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.arrow_back, color: Colors.white),
+                            child: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
                           ),
                           onPressed: () {
                             context.read<BillingBloc>().add(ClearCartEvent());
@@ -105,90 +98,143 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             ),
                           ),
                           background: Container(
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               gradient: AppTheme.primaryGradient,
                             ),
                           ),
                         ),
                       ),
+                      
+                      // Content
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Column(
                             children: [
+                              // Shop Info Card
                               Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(24),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.05),
-                                      blurRadius: 20,
-                                      offset: const Offset(0, 8),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
+                                padding: const EdgeInsets.all(20),
+                                decoration: AppTheme.gradientCardDecoration,
+                                child: Row(
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.all(20),
+                                      width: 60,
+                                      height: 60,
                                       decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            AppTheme.primaryColor.withValues(alpha: 0.1),
-                                            Colors.white,
-                                          ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                        ),
-                                        borderRadius: const BorderRadius.vertical(
-                                          top: Radius.circular(24),
-                                        ),
+                                        gradient: AppTheme.primaryGradient,
+                                        borderRadius: BorderRadius.circular(16),
                                       ),
-                                      child: Row(
+                                      child: const Icon(
+                                        Icons.store,
+                                        color: Colors.white,
+                                        size: 28,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              gradient: AppTheme.primaryGradient,
-                                              borderRadius: BorderRadius.circular(16),
-                                            ),
-                                            child: const Icon(
-                                              Icons.receipt_long,
-                                              color: Colors.white,
-                                              size: 24,
+                                          Text(
+                                            shopName,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppTheme.textPrimary,
                                             ),
                                           ),
-                                          const SizedBox(width: 16),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                shopName,
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppTheme.textPrimary,
-                                                ),
-                                              ),
-                                              Text(
-                                                '${billingState.cartItems.length} item',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey[500],
-                                                ),
-                                              ),
-                                            ],
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            '${billingState.cartItems.length} item dipesan',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: AppTheme.textSecondary,
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    const Divider(height: 1),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.successColor.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.check_circle,
+                                            color: AppTheme.successColor,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            'Aktif',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppTheme.successColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              
+                              const SizedBox(height: 20),
+                              
+                              // Items List
+                              Container(
+                                decoration: AppTheme.cardDecoration,
+                                child: Column(
+                                  children: [
+                                    // Header
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.primaryColor.withValues(alpha: 0.05),
+                                        borderRadius: const BorderRadius.vertical(
+                                          top: Radius.circular(20),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.receipt_long,
+                                            color: AppTheme.primaryColor,
+                                            size: 20,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          const Text(
+                                            'Ringkasan Pesanan',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppTheme.textPrimary,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    
+                                    // Items
                                     ...billingState.cartItems.map((item) {
                                       return Container(
                                         padding: const EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                          vertical: 16,
+                                          horizontal: 16,
+                                          vertical: 14,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          border: Border(
+                                            bottom: BorderSide(
+                                              color: AppTheme.textLight.withValues(alpha: 0.1),
+                                            ),
+                                          ),
                                         ),
                                         child: Row(
                                           children: [
@@ -202,7 +248,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                               alignment: Alignment.center,
                                               child: Text(
                                                 '${item.quantity}x',
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                   color: AppTheme.primaryColor,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -226,7 +272,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                                     'Rp ${item.product.price.toStringAsFixed(0)}/item',
                                                     style: TextStyle(
                                                       fontSize: 12,
-                                                      color: Colors.grey[500],
+                                                      color: AppTheme.textSecondary,
                                                     ),
                                                   ),
                                                 ],
@@ -236,7 +282,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                               'Rp ${item.total.toStringAsFixed(0)}',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 16,
+                                                fontSize: 15,
                                                 color: AppTheme.textPrimary,
                                               ),
                                             ),
@@ -244,26 +290,36 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         ),
                                       );
                                     }),
+                                    
+                                    // Total Section
                                     Container(
                                       padding: const EdgeInsets.all(20),
-                                      decoration: const BoxDecoration(
+                                      decoration: BoxDecoration(
                                         color: AppTheme.backgroundColor,
-                                        borderRadius: BorderRadius.vertical(
-                                          bottom: Radius.circular(24),
+                                        borderRadius: const BorderRadius.vertical(
+                                          bottom: Radius.circular(20),
                                         ),
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Row(
+                                          Row(
                                             children: [
-                                              Icon(
-                                                Icons.account_balance_wallet,
-                                                color: AppTheme.primaryColor,
+                                              Container(
+                                                padding: const EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  gradient: AppTheme.primaryGradient,
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.account_balance_wallet,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                ),
                                               ),
-                                              SizedBox(width: 8),
-                                              Text(
-                                                'Total',
+                                              const SizedBox(width: 12),
+                                              const Text(
+                                                'Total Bayar',
                                                 style: TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold,
@@ -275,16 +331,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                           Container(
                                             padding: const EdgeInsets.symmetric(
                                               horizontal: 20,
-                                              vertical: 10,
+                                              vertical: 12,
                                             ),
                                             decoration: BoxDecoration(
                                               gradient: AppTheme.primaryGradient,
                                               borderRadius: BorderRadius.circular(16),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: AppTheme.primaryColor.withValues(alpha: 0.3),
-                                                  blurRadius: 12,
-                                                  offset: const Offset(0, 4),
+                                                  color: AppTheme.primaryColor.withValues(alpha: 0.4),
+                                                  blurRadius: 15,
+                                                  offset: const Offset(0, 5),
                                                 ),
                                               ],
                                             ),
@@ -303,45 +359,31 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 24),
+                              
+                              const SizedBox(height: 20),
+                              
+                              // QR Code Section
                               if (upiId.isNotEmpty)
                                 Container(
                                   padding: const EdgeInsets.all(24),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(24),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.05),
-                                        blurRadius: 20,
-                                        offset: const Offset(0, 8),
-                                      ),
-                                    ],
-                                  ),
+                                  decoration: AppTheme.cardDecoration,
                                   child: Column(
                                     children: [
                                       Container(
                                         padding: const EdgeInsets.all(16),
                                         decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              AppTheme.secondaryColor.withValues(alpha: 0.1),
-                                              AppTheme.secondaryColor.withValues(alpha: 0.05),
-                                            ],
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                          ),
+                                          color: AppTheme.secondaryColor.withValues(alpha: 0.1),
                                           shape: BoxShape.circle,
                                         ),
-                                        child: const Icon(
+                                        child: Icon(
                                           Icons.qr_code_2,
-                                          size: 48,
+                                          size: 40,
                                           color: AppTheme.secondaryColor,
                                         ),
                                       ),
                                       const SizedBox(height: 16),
                                       const Text(
-                                        'Pindai untuk Bayar',
+                                        'Bayar dengan QR',
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
@@ -353,16 +395,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         'Scan QR dengan aplikasi UPI',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          color: Colors.grey[500],
+                                          color: AppTheme.textSecondary,
                                         ),
                                       ),
                                       const SizedBox(height: 20),
                                       Container(
-                                        padding: const EdgeInsets.all(16),
+                                        padding: const EdgeInsets.all(20),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(20),
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(24),
                                           border: Border.all(
-                                            color: AppTheme.primaryColor.withValues(alpha: 0.2),
+                                            color: AppTheme.primaryColor.withValues(alpha: 0.1),
                                             width: 2,
                                           ),
                                         ),
@@ -370,7 +413,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                           data: 'upi://pay?pa=$upiId&pn=$shopName&am=${billingState.totalAmount.toStringAsFixed(0)}&cu=IDR',
                                         ),
                                       ),
-                                      const SizedBox(height: 12),
+                                      const SizedBox(height: 16),
                                       Container(
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 16,
@@ -380,18 +423,30 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                           color: AppTheme.primaryColor.withValues(alpha: 0.1),
                                           borderRadius: BorderRadius.circular(20),
                                         ),
-                                        child: Text(
-                                          'UPI: $upiId',
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: AppTheme.primaryColor,
-                                          ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.payment,
+                                              size: 16,
+                                              color: AppTheme.primaryColor,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              'UPI: $upiId',
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppTheme.primaryColor,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
+                              
                               const SizedBox(height: 140),
                             ],
                           ),
@@ -415,7 +470,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.08),
-                        blurRadius: 20,
+                        blurRadius: 30,
                         offset: const Offset(0, -5),
                       ),
                     ],
@@ -452,14 +507,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           gradient: billingState.isPrinting
                               ? null
                               : AppTheme.primaryGradient,
-                          color: billingState.isPrinting ? Colors.grey[300] : null,
+                          color: billingState.isPrinting ? AppTheme.textLight.withValues(alpha: 0.3) : null,
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: billingState.isPrinting
                               ? null
                               : [
                                   BoxShadow(
                                     color: AppTheme.primaryColor.withValues(alpha: 0.4),
-                                    blurRadius: 15,
+                                    blurRadius: 20,
                                     offset: const Offset(0, 8),
                                   ),
                                 ],
